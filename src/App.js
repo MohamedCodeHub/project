@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "./App.css";
 
 const App = () => {
@@ -43,11 +44,12 @@ const App = () => {
   const handleKeyPress = (event) => event.key === "Enter" && handleSendClick();
 
   // Render chat messages
-  const renderMessages = () => messages.map((message, index) => (
-    <div key={index} className={message.type === "user" ? "user-message" : "chatbot-message"}>
-      {message.text}
-    </div>
-  ));
+  const renderMessages = () =>
+    messages.map((message, index) => (
+      <div key={index} className={message.type === "user" ? "user-message" : "chatbot-message"}>
+        {message.text}
+      </div>
+    ));
 
   // Scroll to bottom of chat
   const setScrollPosition = () => {
@@ -69,71 +71,75 @@ const App = () => {
 
   return (
     <div className="App">
-      {/* Conditionally render registration container */}
-      {successMessage === "" ? (
-        <div className="registration-container">
-          <h1>Registration Form</h1>
-          <form onSubmit={handleFormSubmit}>
-            <div className="form-group">
-              <label htmlFor="name">Name:</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={name}
-                onChange={handleInputChange}
-                required
-              />
+      <Router basename={process.env.PUBLIC_URL}>
+        <Switch>
+          <Route exact path="/">
+            {successMessage === "" ? (
+              <div className="registration-container">
+                <h1>Registration Form</h1>
+                <form onSubmit={handleFormSubmit}>
+                  <div className="form-group">
+                    <label htmlFor="name">Name:</label>
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      value={name}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="password">Password:</label>
+                    <input
+                      type="password"
+                      id="password"
+                      name="password"
+                      value={password}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                  <button type="submit">Login</button>
+                </form>
+              </div>
+            ) : (
+              <div className="success-message">
+                <p>{successMessage}</p>
+              </div>
+            )}
+          </Route>
+          <Route path="/about">
+            <div className="container">
+              <div className="chat-header">
+                <div className="logo">
+                  <img src="images/cwt.jpg" alt="cwt" />
+                </div>
+                <div className="title">Let's Chat</div>
+              </div>
+              <div className="chat-body" ref={chatBodyRef}>
+                {renderMessages()}
+              </div>
+              <div className="chat-input">
+                <div className="input-sec">
+                  <input
+                    type="text"
+                    id="txtInput"
+                    placeholder="type here"
+                    autoFocus
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                  />
+                </div>
+                <div className="send" onClick={handleSendClick}>
+                  <img src="images/send1.jpg" alt="send" />
+                </div>
+              </div>
             </div>
-            <div className="form-group">
-              <label htmlFor="password">Password:</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={password}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <button type="submit">Login</button>
-          </form>
-        </div>
-      ) : (
-        // Render success message after registration
-        <div className="success-message">
-          <p>{successMessage}</p>
-        </div>
-      )}
-
-      {/* Chatbot */}
-      <div className="container">
-        <div className="chat-header">
-          <div className="logo">
-            <img src="images/cwt.jpg" alt="cwt" />
-          </div>
-          <div className="title">Let's Chat</div>
-        </div>
-        <div className="chat-body" ref={chatBodyRef}>
-          {renderMessages()}
-        </div>
-        <div className="chat-input">
-          <div className="input-sec">
-            <input
-              type="text"
-              id="txtInput"
-              placeholder="type here"
-              autoFocus
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyPress={handleKeyPress}
-            />
-          </div>
-          <div className="send" onClick={handleSendClick}>
-            <img src="images/send1.jpg" alt="send" />
-          </div>
-        </div>
-      </div>
+          </Route>
+        </Switch>
+      </Router>
     </div>
   );
 };
