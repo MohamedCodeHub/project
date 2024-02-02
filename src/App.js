@@ -1,6 +1,5 @@
 import React, { useState, useRef } from "react";
-import { BrowserRouter as Router, Route} from "react-router-dom";
-import { Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import "./App.css";
 
@@ -73,9 +72,9 @@ const App = () => {
 
   return (
     <div className="App">
-      <Router basename={process.env.PUBLIC_URL}>
-        <Switch>
-          <Route exact path="/">
+      <Router>
+        <Routes>
+          <Route path="/">
             {successMessage === "" ? (
               <div className="registration-container">
                 <h1>Registration Form</h1>
@@ -140,7 +139,7 @@ const App = () => {
               </div>
             </div>
           </Route>
-        </Switch>
+        </Routes>
       </Router>
     </div>
   );
