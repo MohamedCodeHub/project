@@ -67,7 +67,7 @@ const App = () => {
             />
           </div>
           <div className="send" onClick={handleSendClick}>
-            <img src="./images/send1.jpg" alt="send" />
+            <img src="images/send1.jpg" alt="send" />
           </div>
         </div>
       </div>
