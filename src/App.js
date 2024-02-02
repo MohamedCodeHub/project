@@ -2,12 +2,33 @@ import React, { useState, useRef } from "react";
 import "./App.css";
 
 const App = () => {
+  // State for registration form
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
+  // State for chatbot
   const [inputValue, setInputValue] = useState("");
   const [messages, setMessages] = useState([]);
   const chatBodyRef = useRef();
 
-  const handleInputChange = (event) => setInputValue(event.target.value);
+  // Handle form submission for registration
+  const handleFormSubmit = (event) => {
+    event.preventDefault();
+    setSuccessMessage(`Hello, ${name}. You have registered successfully.`);
+    // Clear input fields
+    setName("");
+    setPassword("");
+  };
 
+  // Handle input change for registration form
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    if (name === "name") setName(value);
+    if (name === "password") setPassword(value);
+  };
+
+  // Handle form submission for chatbot
   const handleSendClick = () => {
     if (inputValue.trim() !== "") {
       const userMessage = { text: inputValue, type: "user" };
@@ -18,18 +39,22 @@ const App = () => {
     }
   };
 
+  // Handle key press for chatbot
   const handleKeyPress = (event) => event.key === "Enter" && handleSendClick();
 
+  // Render chat messages
   const renderMessages = () => messages.map((message, index) => (
     <div key={index} className={message.type === "user" ? "user-message" : "chatbot-message"}>
       {message.text}
     </div>
   ));
 
+  // Scroll to bottom of chat
   const setScrollPosition = () => {
     if (chatBodyRef.current) chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
   };
 
+  // Get chatbot response
   const getChatbotResponse = (userInput) => {
     const userInputLowerCase = userInput.toLowerCase();
     const responseObj = {
@@ -44,6 +69,44 @@ const App = () => {
 
   return (
     <div className="App">
+      {/* Conditionally render registration container */}
+      {successMessage === "" ? (
+        <div className="registration-container">
+          <h1>Registration Form</h1>
+          <form onSubmit={handleFormSubmit}>
+            <div className="form-group">
+              <label htmlFor="name">Name:</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={name}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="password">Password:</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={password}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <button type="submit">Login</button>
+          </form>
+        </div>
+      ) : (
+        // Render success message after registration
+        <div className="success-message">
+          <p>{successMessage}</p>
+        </div>
+      )}
+
+      {/* Chatbot */}
       <div className="container">
         <div className="chat-header">
           <div className="logo">
@@ -62,7 +125,7 @@ const App = () => {
               placeholder="type here"
               autoFocus
               value={inputValue}
-              onChange={handleInputChange}
+              onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
             />
           </div>
